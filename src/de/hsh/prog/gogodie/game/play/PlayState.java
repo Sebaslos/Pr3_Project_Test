@@ -38,7 +38,7 @@ public class PlayState extends GameState implements Runnable{
         	long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
-            boolean shouldRender = false;
+            boolean shouldRender = true;
 
             while (delta >= 1) {
                 ticks++;
