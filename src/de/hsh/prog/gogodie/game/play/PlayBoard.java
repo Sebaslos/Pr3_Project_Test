@@ -16,9 +16,9 @@ public abstract class PlayBoard {
 	protected Map map;
 	
 	private Player player;
-	private int i = 0;
 	
-	public PlayBoard() {
+	public PlayBoard(Player player) {
+		this.player = player;
 		staticBuffer = new BufferedImage(GameState.WIDTH, GameState.HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		dynamicBuffer = new BufferedImage(GameState.WIDTH, GameState.HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	}
@@ -30,8 +30,14 @@ public abstract class PlayBoard {
 	public Image getBuffer() {
 		Graphics g = dynamicBuffer.getGraphics();
 		g.drawImage(staticBuffer, 0, 0, null);
+		g.drawImage(player.getFrame(), player.getX(), player.getY(), null);
 		g.dispose();
 		return dynamicBuffer;
 	}
+	
+	public void update() {
+        player.update();
+        
+    }
 
 }

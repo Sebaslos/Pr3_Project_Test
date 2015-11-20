@@ -1,10 +1,12 @@
 package de.hsh.prog.gogodie.game.play;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import de.hsh.prog.gogodie.game.GameState;
 import de.hsh.prog.gogodie.game.actor.Player;
+import de.hsh.prog.gogodie.game.gfx.SpriteSheet;
 
 @SuppressWarnings("serial")
 public class PlayState extends GameState implements Runnable{
@@ -13,13 +15,15 @@ public class PlayState extends GameState implements Runnable{
 	
 	private PlayBoard board;
 	private Player player;
+	private SpriteSheet sprite;
 	
 	public boolean running = false;
 	
 	public PlayState() {
-		board = new Level1();
-		player = new Player();
-		
+		sprite = new SpriteSheet("/res/sprite_sheet.png", 16, 16, 10);
+		player = new Player(sprite,new Rectangle(16,16,16,16));
+		board = new Level1(player);
+		addKeyListener(player);
 		this.startGame();
 	}
 	
@@ -77,7 +81,7 @@ public class PlayState extends GameState implements Runnable{
 	}
 	
 	private void update(){
-		
+		board.update();
 	}
 	
 	private void render(){
