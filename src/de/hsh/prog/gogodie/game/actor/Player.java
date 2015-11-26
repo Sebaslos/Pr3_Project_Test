@@ -26,6 +26,8 @@ public class Player extends Mob implements KeyListener{
         sprite.addAnimation(PlayerAnimation.WALK_UP, 37);
         sprite.addAnimation(PlayerAnimation.WALK_LEFT, 35);
         sprite.addAnimation(PlayerAnimation.WALK_RIGHT, 36);
+        
+        sprite.playAnimation(PlayerAnimation.WALK_DOWN, false);
 	}
 	
 

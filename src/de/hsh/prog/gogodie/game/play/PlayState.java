@@ -1,7 +1,11 @@
 package de.hsh.prog.gogodie.game.play;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
 import de.hsh.prog.gogodie.game.GameState;
@@ -23,7 +27,7 @@ public class PlayState extends GameState implements Runnable{
 		sprite = new SpriteSheet("/res/sprite_sheet.png", 16, 16, 10);
 		player = new Player(sprite,new Rectangle(16,16,16,16));
 		board = new Level1(player);
-		addKeyListener(player);
+		this.addKeyListener(player);
 		this.startGame();
 	}
 	

@@ -81,7 +81,6 @@ public class SpriteSheet {
     }
     
     public BufferedImage getCurrentFrame() {
-    	System.out.println(currentAnimation);
         int index = currentAnimation.get(currentFrameIndex);
         return getFrame(index);
     }
