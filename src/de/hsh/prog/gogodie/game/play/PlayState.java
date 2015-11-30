@@ -1,16 +1,11 @@
 package de.hsh.prog.gogodie.game.play;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 
 import de.hsh.prog.gogodie.game.GameState;
 import de.hsh.prog.gogodie.game.actor.Player;
-import de.hsh.prog.gogodie.game.gfx.SpriteSheet;
 
 @SuppressWarnings("serial")
 public class PlayState extends GameState implements Runnable{
@@ -19,13 +14,11 @@ public class PlayState extends GameState implements Runnable{
 	
 	private PlayBoard board;
 	private Player player;
-	private SpriteSheet sprite;
 	
 	public boolean running = false;
 	
 	public PlayState() {
-		sprite = new SpriteSheet("/res/sprite_sheet.png", 16, 16, 10);
-		player = new Player(sprite,new Rectangle(16,16,16,16));
+		player = new Player(new Rectangle(640,360,16,16));
 		board = new Level1(player);
 		this.addKeyListener(player);
 		this.startGame();
@@ -46,7 +39,7 @@ public class PlayState extends GameState implements Runnable{
         	long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
-            boolean shouldRender = true;
+            boolean shouldRender = false;
 
             while (delta >= 1) {
                 ticks++;
@@ -68,6 +61,7 @@ public class PlayState extends GameState implements Runnable{
 
             if (System.currentTimeMillis() - lastTimer >= 1000) {
             	System.out.println(ticks+" "+frames);
+            	create();
                 lastTimer += 1000;
                 frames = 0;
                 ticks = 0;
@@ -86,6 +80,10 @@ public class PlayState extends GameState implements Runnable{
 	
 	private void update(){
 		board.update();
+	}
+	
+	private void create(){
+		board.create();
 	}
 	
 	private void render(){

@@ -3,13 +3,12 @@ package de.hsh.prog.gogodie.game.actor;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import de.hsh.prog.gogodie.game.gfx.SpriteSheet;
-public class Mob extends Actor {
+public abstract class Mob extends Actor {
 
-	private int speed = 2;
+	protected int speed = 2;
 	
-	public Mob(SpriteSheet sprite,Rectangle bound) {
-		super(sprite,bound);
+	public Mob(Rectangle bound) {
+		super(bound);
 	}
 	
 	public void update() {
@@ -24,6 +23,10 @@ public class Mob extends Actor {
         return speed;
     }
     
+    public void setSpeed(int speed){
+    	this.speed = speed;
+    }
+    
     public int getX() {
         return bound.x;
     }
@@ -36,24 +39,6 @@ public class Mob extends Actor {
         return sprite.getCurrentFrame();
     }
     
-	protected void move(Direction d){
-		switch (d) {
-        case LEFT:
-            bound.x -= speed;
-            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
-            break;
-        case RIGHT:
-            bound.x += speed;
-            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
-            break;
-        case UP:
-            bound.y -= speed;
-            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
-            break;
-        case DOWN:
-            bound.y += speed;
-            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
-            break;
-		}
-	}
+	protected abstract void move(Direction d);
+	
 }

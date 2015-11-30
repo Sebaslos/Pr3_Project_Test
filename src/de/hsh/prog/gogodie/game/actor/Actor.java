@@ -10,8 +10,8 @@ public abstract class Actor {
 	protected Rectangle bound;
 	protected SpriteSheet sprite;
 	
-	public Actor(SpriteSheet sprite,Rectangle bound) {
-		this.sprite = sprite;
+	public Actor(Rectangle bound) {
+		this.sprite = new SpriteSheet("/res/sprite_sheet.png", 16, 16, 10);
 		this.bound = bound;
 	}
 	

@@ -4,8 +4,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import de.hsh.prog.gogodie.game.gfx.SpriteSheet;
-
 public class Player extends Mob implements KeyListener{
 
     private int keyLeft = KeyEvent.VK_LEFT;
@@ -20,8 +18,8 @@ public class Player extends Mob implements KeyListener{
 	
 	private Direction currentDirection = Direction.DOWN;
 	
-	public Player(SpriteSheet sprite, Rectangle bound) {
-		super(sprite, bound);
+	public Player(Rectangle bound) {
+		super(bound);
 		sprite.addAnimation(PlayerAnimation.WALK_DOWN, 34);
         sprite.addAnimation(PlayerAnimation.WALK_UP, 37);
         sprite.addAnimation(PlayerAnimation.WALK_LEFT, 35);
@@ -38,7 +36,29 @@ public class Player extends Mob implements KeyListener{
         }
 		super.update();
 	}
-
+	
+	@Override
+	protected void move(Direction d) {
+		switch (d) {
+        case LEFT:
+            bound.x -= speed;
+            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
+            break;
+        case RIGHT:
+            bound.x += speed;
+            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
+            break;
+        case UP:
+            bound.y -= speed;
+            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
+            break;
+        case DOWN:
+            bound.y += speed;
+            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
+            break;
+		}
+	}
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
