@@ -3,7 +3,6 @@ package de.hsh.prog.gogodie.game.play;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -12,7 +11,6 @@ import de.hsh.prog.gogodie.game.actor.Player;
 import de.hsh.prog.gogodie.game.map.Map;
 import de.hsh.prog.gogodie.game.monster.Monster;
 import de.hsh.prog.gogodie.game.monster.MonsterFactory;
-import de.hsh.prog.gogodie.game.monster.NormalMonster;
 
 public abstract class PlayBoard {
 
@@ -27,6 +25,7 @@ public abstract class PlayBoard {
 	public PlayBoard(Player player) {
 		this.player = player;
 		monsters = new ArrayList<Monster>();
+		player.setMonsters(monsters);
 		//this.monster = new NormalMonster(new Rectangle(160, 160, 16, 16));
 		MonsterFactory.setPlayerPosition(player.getX(), player.getY());
 		staticBuffer = new BufferedImage(GameState.WIDTH, GameState.HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -34,11 +33,12 @@ public abstract class PlayBoard {
 	}
 	
 	public void init(){
-		Graphics g = staticBuffer.getGraphics();
-		g.setColor(Color.pink);
-		g.fillRect(0, 0, GameState.WIDTH, GameState.HEIGHT);
-		//staticBuffer = map.getMap();
-		g.dispose();
+		//Graphics g = staticBuffer.getGraphics();
+		//g.setColor(Color.pink);
+		//g.fillRect(0, 0, GameState.WIDTH, GameState.HEIGHT);
+		staticBuffer = map.getMap();
+		player.setHindernis(map.getHindernis());
+		//g.dispose();
 	}
 	
 	public Image getBuffer() {

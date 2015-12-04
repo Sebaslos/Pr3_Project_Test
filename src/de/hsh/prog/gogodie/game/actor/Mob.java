@@ -41,4 +41,5 @@ public abstract class Mob extends Actor {
     
 	protected abstract void move(Direction d);
 	
+	
 }

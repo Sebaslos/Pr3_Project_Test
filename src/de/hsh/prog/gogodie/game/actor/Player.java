@@ -3,6 +3,9 @@ package de.hsh.prog.gogodie.game.actor;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+
+import de.hsh.prog.gogodie.game.monster.Monster;
 
 public class Player extends Mob implements KeyListener{
 
@@ -18,6 +21,9 @@ public class Player extends Mob implements KeyListener{
 	
 	private Direction currentDirection = Direction.DOWN;
 	
+	private ArrayList<Monster> monsters;
+	private ArrayList<Rectangle> liste;
+	
 	public Player(Rectangle bound) {
 		super(bound);
 		sprite.addAnimation(PlayerAnimation.WALK_DOWN, 34);
@@ -28,7 +34,14 @@ public class Player extends Mob implements KeyListener{
         sprite.playAnimation(PlayerAnimation.WALK_DOWN, false);
 	}
 	
-
+	public void setMonsters(ArrayList<Monster> monsters) {
+		this.monsters = monsters;
+	}
+	
+	public void setHindernis(ArrayList<Rectangle> liste) {
+		this.liste = liste;
+	}
+	
 	@Override
 	public void update() {
 		if (keyLeftPressed || keyRightPressed || keyDownPressed || keyUpPressed) {
@@ -39,24 +52,62 @@ public class Player extends Mob implements KeyListener{
 	
 	@Override
 	protected void move(Direction d) {
-		switch (d) {
-        case LEFT:
-            bound.x -= speed;
-            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
-            break;
-        case RIGHT:
-            bound.x += speed;
-            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
-            break;
-        case UP:
-            bound.y -= speed;
-            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
-            break;
-        case DOWN:
-            bound.y += speed;
-            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
-            break;
+		if(!resolveCollision(d)) {
+			switch (d) {
+	        case LEFT:
+	            bound.x -= speed;
+	            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
+	            break;
+	        case RIGHT:
+	            bound.x += speed;
+	            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
+	            break;
+	        case UP:
+	            bound.y -= speed;
+	            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
+	            break;
+	        case DOWN:
+	            bound.y += speed;
+	            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
+	            break;
+			}
 		}
+		
+	}
+	
+	private boolean resolveCollision(Direction d) {
+		Rectangle r;
+		switch (d) {
+		case LEFT:
+			r = new Rectangle(bound.x-speed, bound.y, bound.width, bound.height);
+			break;
+		case RIGHT:
+			r = new Rectangle(bound.x+speed, bound.y, bound.width, bound.height);
+			break;
+		case UP:
+			r = new Rectangle(bound.x, bound.y-speed, bound.width, bound.height);
+			break;
+		case DOWN:
+			r = new Rectangle(bound.x, bound.y+speed, bound.width, bound.height);
+			break;
+		default:
+			r = new Rectangle(bound.x, bound.y, bound.width, bound.height);
+			break;
+		}
+			
+		/*for(Monster monster : monsters) {
+			if(r.intersects(monster.getBounds())) {
+				return true;
+			}
+		}*/
+		
+		for(Rectangle hin : liste) {
+			if(r.intersects(hin.getBounds())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
