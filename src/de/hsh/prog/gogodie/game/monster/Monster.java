@@ -1,64 +1,104 @@
 package de.hsh.prog.gogodie.game.monster;
 
-import java.awt.Rectangle;
-
+import de.hsh.prog.gogodie.game.actor.Actor;
 import de.hsh.prog.gogodie.game.actor.Direction;
 import de.hsh.prog.gogodie.game.actor.Mob;
+import de.hsh.prog.gogodie.game.actor.Player;
 
 public abstract class Monster extends Mob{
 	
-	protected int HP;
-	protected int ACT;
+	protected int type;
+	protected int point;
 	
 	private boolean alive;
 	private Direction currentDirection = Direction.DOWN;
 	
-	public Monster(Rectangle bound) {
-		super(bound);
+	private int tick = 0;
+	private int attackTick = 0;
+	private int cooldownTime = 30;
+	private boolean inCooldown = false;
+	
+	public Monster(int x, int y, int width, int height) {
+		super(x, y, width, height);
 		this.alive = true;
-		setSpeed(1);
 	}
 	
-	public int getHP() {
-		return HP;
+	protected void attack(Player player){
+		if(!player.hasShield())
+			player.setHP(player.getHP() - this.getACT());
+		else 
+			System.out.println("fuck! player hasShield");
+		inCooldown = true;
+		System.out.println("Player HP: "+player.getHP());
 	}
 
-	public void setHP(int hP) {
-		this.HP = hP;
-	}
-
-	public int getACT() {
-		return ACT;
-	}
-
-	public void setACT(int aCT) {
-		this.ACT = aCT;
+	private void cooldown() {
+		attackTick++;
+		if(attackTick > cooldownTime) {
+			attackTick = 0;
+			inCooldown = false;
+		}
 	}
 	
-	protected void attact(){
-		
+	public int getType() {
+		return type;
 	}
-
+	
+	public int getPoint() {
+		return point;
+	}
+	
 	@Override
 	public void update() {
-		if(MonsterFactory.player_x - getX()>0&&currentDirection!=Direction.RIGHT){
-			currentDirection = Direction.RIGHT;
-			//move(Direction.RIGHT);
-		}else
-		if(MonsterFactory.player_x - getX()<0&&currentDirection != Direction.LEFT){
-			currentDirection = Direction.LEFT;
-			//move(Direction.LEFT);
-		}else 
-		if(MonsterFactory.player_y - getY()>0&&currentDirection != Direction.DOWN){
-			currentDirection = Direction.DOWN;
-			//move(Direction.DOWN);
-		}else
-		if(MonsterFactory.player_y - getY()<0&&currentDirection != Direction.UP){
-			currentDirection = Direction.UP;
-			//move(Direction.UP);
+		if(alive) {
+			if(tick>=10) {
+				int dx = MonsterFactory.player_x - getX();
+				int dy = MonsterFactory.player_y - getY();
+				if(Math.abs(dx) > Math.abs(dy)) {
+					if(dx < 0)
+						currentDirection = Direction.LEFT;
+					else
+						currentDirection = Direction.RIGHT;
+				}else {
+					if(dy < 0)
+						currentDirection = Direction.UP;
+					else
+						currentDirection = Direction.DOWN;
+				}
+				tick = 0;
+			}
+			
+			Actor solid = hasCollision(currentDirection);
+			if(solid == null)
+				move(currentDirection);
+			else
+				resolveCollision(solid);
+			
+			tick++;
+			if(inCooldown) {
+				cooldown();
+			}
+			super.update();
 		}
-		move(currentDirection);
-		super.update();
+	}
+	
+	private void resolveCollision(Actor solid) {
+		if(solid instanceof Player) {
+			if(!inCooldown)
+				attack((Player)solid);
+		}else {
+			if(currentDirection == Direction.LEFT || currentDirection == Direction.RIGHT) {
+				if(this.y >= solid.getY())
+					currentDirection = Direction.DOWN;
+				else 
+					currentDirection = Direction.UP;
+			}else if(currentDirection == Direction.UP || currentDirection == Direction.DOWN) {
+				if(this.x >= solid.getX())
+					currentDirection = Direction.RIGHT;
+				else 
+					currentDirection = Direction.LEFT;
+			}
+		}
 	}
 	
 }

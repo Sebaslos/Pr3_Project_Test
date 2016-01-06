@@ -1,16 +1,18 @@
 package de.hsh.prog.gogodie.game.monster;
 
-import java.awt.Rectangle;
-
 import de.hsh.prog.gogodie.game.actor.Direction;
 
 public class NormalMonster extends Monster {
 
-	public NormalMonster(Rectangle bound) {
-		super(bound);
+	public NormalMonster(int x, int y, int width, int height) {
+		super(x, y, width, height);
 		init();
 		setHP(10);
-		setACT(2);
+		setACT(3);
+		setSpeed(2);
+		
+		type = 1;
+		point = 200;
 	}
 	
 	private void init(){
@@ -26,19 +28,19 @@ public class NormalMonster extends Monster {
 	protected void move(Direction d) {
 		switch (d) {
         case LEFT:
-            bound.x -= speed;
+            x -= speed;
             sprite.playAnimation(MonsterAnimation.NORMAL_MONSTER_WALK_LEFT, true);
             break;
         case RIGHT:
-            bound.x += speed;
+            x += speed;
             sprite.playAnimation(MonsterAnimation.NORMAL_MONSTER_WALK_RIGHT, true);
             break;
         case UP:
-            bound.y -= speed;
+            y -= speed;
             sprite.playAnimation(MonsterAnimation.NORMAL_MONSTER_WALK_UP, true);
             break;
         case DOWN:
-            bound.y += speed;
+            y += speed;
             sprite.playAnimation(MonsterAnimation.NORMAL_MONSTER_WALK_DOWN, true);
             break;
 		}

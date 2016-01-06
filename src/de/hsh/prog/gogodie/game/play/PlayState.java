@@ -1,95 +1,187 @@
 package de.hsh.prog.gogodie.game.play;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
-import de.hsh.prog.gogodie.game.GameState;
+import de.hsh.prog.gogodie.game.actor.ActorList;
+import de.hsh.prog.gogodie.game.actor.Direction;
 import de.hsh.prog.gogodie.game.actor.Player;
+import de.hsh.prog.gogodie.game.map.Map;
+import de.hsh.prog.gogodie.game.monster.Blutfleck;
+import de.hsh.prog.gogodie.game.monster.Monster;
+import de.hsh.prog.gogodie.game.monster.MonsterFactory;
+import de.hsh.prog.gogodie.game.powerup.PowerUp;
+import de.hsh.prog.gogodie.game.powerup.PowerupFactory;
+import de.hsh.prog.gogodie.game.state.GameState;
+import de.hsh.prog.gogodie.game.utils.Data;
+import de.hsh.prog.gogodie.game.utils.GameStateManager;
+import de.hsh.prog.gogodie.game.utils.Highscore;
+import de.hsh.prog.gogodie.game.utils.JukeBox;
+import de.hsh.prog.gogodie.game.utils.Keys;
+import de.hsh.prog.gogodie.game.utils.MouseHandler;
+import de.hsh.prog.gogodie.game.waffe.Munition;
 
-@SuppressWarnings("serial")
-public class PlayState extends GameState implements Runnable{
+public abstract class PlayState extends GameState implements Runnable{
 
-	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-	
-	private PlayBoard board;
 	private Player player;
+	protected ArrayList<Monster> monsters;
+	protected ArrayList<Blutfleck> blutflecken;
+	protected ArrayList<PowerUp> powerups;
 	
-	public boolean running = false;
+	protected Map map;
 	
-	public PlayState() {
-		player = new Player(new Rectangle(640,360,16,16));
-		board = new Level1(player);
-		this.addKeyListener(player);
-		this.startGame();
+	private Hud hud;
+	
+	protected boolean finished;
+	protected String bgm;
+	
+	private int tick;
+	
+	public PlayState(GameStateManager gsm) {
+		super(gsm);
 	}
-	
+
 	@Override
-	public void run() {
-        long lastTime = System.nanoTime();
-        double nsPerTick = 1000000000D / 60D;
-
-        int ticks = 0;
-        int frames = 0;
-
-        long lastTimer = System.currentTimeMillis();
-        double delta = 0;
-        
-        while(running){
-        	long now = System.nanoTime();
-            delta += (now - lastTime) / nsPerTick;
-            lastTime = now;
-            boolean shouldRender = false;
-
-            while (delta >= 1) {
-                ticks++;
-                update();
-                delta -= 1;
-                shouldRender = true;
-            }
-
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (shouldRender) {
-                frames++;
-                render();
-            }
-
-            if (System.currentTimeMillis() - lastTimer >= 1000) {
-            	System.out.println(ticks+" "+frames);
-            	create();
-                lastTimer += 1000;
-                frames = 0;
-                ticks = 0;
-            }
-        }
+	public void init() {
+		tick = 0;
+		finished = false;
+		
+		player = new Player(640,320,16,15);
+		monsters = new ArrayList<Monster>();
+		blutflecken = new ArrayList<Blutfleck>();
+		powerups = new ArrayList<PowerUp>();
+		hud = new Hud(player);
+		MonsterFactory.setPlayerPosition(player.getX(), player.getY());
+		
+		JukeBox.load("/sound/pistol.wav", "pistol");
+		JukeBox.load("/sound/shotgun.wav", "shotgun");
+		JukeBox.load("/sound/machinegun.wav", "machinegun");
+		JukeBox.setVolume("machinegun", -10);
+		JukeBox.setVolume("shotgun", -10);
+		JukeBox.load("/sound/pt_reload.wav", "pt_reload");
+		JukeBox.load("/sound/sg_reload.wav", "sg_reload");
+		JukeBox.load("/sound/mg_reload.wav", "mg_reload");
+		
+		Data.reset();
 	}
 
-	public synchronized void startGame(){
-		running = true;
-		new Thread(this).start();
+	@Override
+	public void update() {
+		
+		if(player.getHP() <= 0) {
+			ActorList.removeAll();
+			Highscore.calculate();
+			JukeBox.stop(bgm);
+			JukeBox.loop("menubgm", 1000, 1000, JukeBox.getFrames("menubgm") - 1000);
+			gsm.setState(GameStateManager.HIGHSCORE);
+		}
+		
+		if(finished) {
+			ActorList.removeAll();
+			if(this instanceof Level1) {
+				Data.setLevel1Time(Data.getTime());
+				JukeBox.stop(bgm);
+				gsm.setState(GameStateManager.PLAY_LEVEL2);
+			}
+			else if(this instanceof Level2) {
+				Data.setLevel2Time(Data.getTime());
+				Highscore.calculate();
+				JukeBox.stop(bgm);
+				JukeBox.loop("menubgm", 1000, 1000, JukeBox.getFrames("menubgm") - 1000);
+				gsm.setState(GameStateManager.HIGHSCORE);
+			}
+		}
+		
+		Data.update();
+		
+		handleInput();
+		
+		player.update();
+		
+		if (tick % 2 == 0) {
+			MonsterFactory.setPlayerPosition(player.getX(), player.getY());
+			Monster losch = null;
+			for (Monster monster : monsters) {
+				if (monster.getHP() <= 0) {
+					losch = monster;
+					Highscore.plusScore(losch.getPoint());
+					blutflecken.add(new Blutfleck(losch.getX(), losch.getY(), 16, 16));
+					
+					PowerUp powerup = PowerupFactory.createPowerup(losch.getX(), losch.getY());
+					if(powerup != null) {
+						powerups.add(powerup);
+					}
+				} else
+					monster.update();
+			}
+			monsters.remove(losch);
+			ActorList.actorList.remove(losch);
+		}
+		
+		for (Blutfleck bf : blutflecken) {
+			bf.update();
+		}
+		
+		for(int i=0;i < powerups.size();i++) {
+			PowerUp powerup = powerups.get(i);
+			if(player.getBounds().intersects(powerup.getBounds())) {
+				powerups.remove(i);
+				i--;
+				player.collect(powerup);
+			}
+		}
+		
+		if (tick++ >= 60) {
+			execute();
+			tick = 0;
+		}
+			
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		g.drawImage(map.getMap(), 0, 0, null);
+		
+		for(Blutfleck bf : blutflecken) {
+			g.drawImage(bf.getFrame(), bf.getX(), bf.getY(), null);
+		}
+		
+		for(PowerUp p : powerups) {
+			p.draw(g);
+		}
+		
+		g.drawImage(player.getStaticFrame(), player.getX() - 8, player.getY() - 8, null);
+		
+		for(Monster monster : monsters){
+			g.drawImage(monster.getFrame(), monster.getX(), monster.getY(), (int)(monster.getWidth() * 1.3), (int)(monster.getHeight() * 1.3) ,null);
+		}
+		
+		for(Munition m : player.getWaffe().getMunitions()) {
+			if(m.hasHit()==false)
+				g.drawImage(m.getStaticFrame(), m.getX(), m.getY(), null);
+		}
+		
+		hud.draw(g);
+	}
+
+	@Override
+	public void handleInput() {
+		//if(Keys.isDown(Keys.SPACE)) player.shoot();
+		if(MouseHandler.pressed == true) player.shoot();
+		if(Keys.isDown(Keys.R) && !player.getWaffe().isInReload()) player.reloadWaffe();
+		
+    	if(Keys.dirList.isEmpty()) return;
+    	
+    	int i = Keys.dirList.get(Keys.dirList.size() - 1);
+    	if(i == KeyEvent.VK_W) player.setDirection(Direction.UP);
+    	if(i == KeyEvent.VK_S) player.setDirection(Direction.DOWN);
+    	if(i == KeyEvent.VK_A) player.setDirection(Direction.LEFT);
+    	if(i == KeyEvent.VK_D) player.setDirection(Direction.RIGHT);
 	}
 	
-	public synchronized void stopGame(){
-		running = false;
-	}
+	protected abstract int createMonster(String type);
 	
-	private void update(){
-		board.update();
-	}
-	
-	private void create(){
-		board.create();
-	}
-	
-	private void render(){
-		Graphics g = image.getGraphics();
-		g.drawImage(board.getBuffer(), 0, 0, this);
-		g.dispose();
-		this.getGraphics().drawImage(image, 0, 0, this);
-	}
+	public abstract void execute();
+
 }

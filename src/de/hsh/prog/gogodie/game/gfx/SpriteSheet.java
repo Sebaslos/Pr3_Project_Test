@@ -85,4 +85,11 @@ public class SpriteSheet {
         return getFrame(index);
     }
 	
+    public boolean isLastFrame() {
+    	if(currentAnimation.get(currentFrameIndex) == currentAnimation.get(currentAnimation.size()-1))
+    		return true;
+    	else 
+    		return false;
+    }
+    
 }

@@ -27,5 +27,9 @@ public enum MonsterAnimation implements AnimationID {
 	BOSS2_WALK_UP,
 	BOSS2_WALK_DOWN,
 	BOSS2_WALK_LEFT,
-	BOSS2_WALK_RIGHT
+	BOSS2_WALK_RIGHT,
+	
+	Blutfleck1,
+	Blutfleck2,
+	Blutfleck3
 }

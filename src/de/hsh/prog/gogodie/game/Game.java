@@ -1,30 +1,29 @@
 package de.hsh.prog.gogodie.game;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
-
-import de.hsh.prog.gogodie.game.play.PlayState;
 
 @SuppressWarnings("serial")
 public class Game extends JFrame{
 	
-	private static Game THIS;
+	//private static int x;
+	//private static int y;
 	
 	public Game() {
 		super("gogoDie");
-		THIS = this;
-		setLayout(new BorderLayout());
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setResizable(false);
+		
+		add(new GamePanel());
+		
+		/*x = (getToolkit().getScreenSize().width - 1280) / 2;
+        y = (getToolkit().getScreenSize().height - 720) / 2;
+        setLocation(x, y);*/
+        
+        setResizable(false);
+        pack();
+        
+        setLocationRelativeTo(null);
 		setVisible(true);
-		switchState(new PlayState());
-	}
-
-	public static void switchState(GameState state){
-		THIS.getContentPane().removeAll();
-		THIS.add(state,BorderLayout.CENTER);
-		THIS.pack();
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 	}
 	
 }
