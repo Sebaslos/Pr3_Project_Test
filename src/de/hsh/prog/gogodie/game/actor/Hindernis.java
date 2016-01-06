@@ -13,28 +13,16 @@ public class Hindernis extends Actor {
 		super(bound);
 		sprite.addAnimation(HindernisAnimation.STEIN , 1);
 		this.liste = liste;
-		
-
-
-		//sprite.getFrame(1);
-		
-
-
-		// TODO Auto-generated constructor stub
 	}
 
 	
 	public void malen(BufferedImage map){
 		Graphics g = map.getGraphics();
-
 		
 		for (int i=0; i<93; i++) {
 
 			g.drawImage(sprite.getFrame(1),(int)liste.get(i).getX(),(int) liste.get(i).getY(), null);
 		}
 		g.dispose();
-		//	g.fillRect(rand.nextInt(1280),rand.nextInt(720) , 20, 20);
-	
-		
 	}
 }
