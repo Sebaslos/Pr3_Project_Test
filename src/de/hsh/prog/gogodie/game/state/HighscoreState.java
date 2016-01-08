@@ -15,6 +15,7 @@ public class HighscoreState extends GameState {
 
 	private String option = "BACK";
 	private boolean selected = false;
+	private ArrayList<String> scoreList;
 	
 	public HighscoreState(GameStateManager gsm) {
 		super(gsm);
@@ -22,6 +23,7 @@ public class HighscoreState extends GameState {
 
 	@Override
 	public void init() {
+		scoreList = XmlUtils.getScoreList();
 	}
 
 	@Override
@@ -46,7 +48,6 @@ public class HighscoreState extends GameState {
 	}
 	
 	private void drawHighscoreList(Graphics2D g) {
-		ArrayList<String> scoreList = XmlUtils.getScoreList();
 		for(int i=0;i < scoreList.size();i++) {
 			Content.drawString(g, i+1 + ": "+scoreList.get(i), 500, 150 + i * 50, 5, false);
 		}
