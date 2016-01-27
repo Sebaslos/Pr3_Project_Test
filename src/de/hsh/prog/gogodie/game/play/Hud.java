@@ -30,7 +30,11 @@ public class Hud {
 		g.setColor(Color.red);
 		g.fillRect(75, 19, (int)(120 * player.getHP() / hp), 20);
 		
-		String s = player.getHP() + "/" + hp;
+		String s;
+		if(player.getHP() <= 0)
+			s = 0 + "/" + hp;
+		else 
+			s = player.getHP() + "/" + hp;
 		Content.drawString(g, s, 206, 16, 3, false);
 		
 		//draw waffe

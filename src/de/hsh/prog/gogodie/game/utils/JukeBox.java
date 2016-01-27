@@ -15,6 +15,8 @@ public class JukeBox {
 	private static HashMap<String, Clip> clips;
 	private static int gap;
 	
+	private static String currentMusic;
+	
 	// Creates new clips HashMap.
 	public static void init() {
 		clips = new HashMap<String, Clip>();
@@ -65,6 +67,7 @@ public class JukeBox {
 	
 	public static void stop(String s) {
 		if(clips.get(s) == null) return;
+		currentMusic = s;
 		if(clips.get(s).isRunning()) clips.get(s).stop();
 	}
 	
@@ -75,6 +78,12 @@ public class JukeBox {
 	
 	public static void resumeLoop(String s) {
 		Clip c = clips.get(s);
+		if(c == null) return;
+		c.loop(Clip.LOOP_CONTINUOUSLY);
+	}
+	
+	public static void resumeLoop() {
+		Clip c = clips.get(currentMusic);
 		if(c == null) return;
 		c.loop(Clip.LOOP_CONTINUOUSLY);
 	}

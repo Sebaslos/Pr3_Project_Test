@@ -44,13 +44,6 @@ public class Player extends Mob{
 		setImage(Content.player[0][0]);
 		
 		originImage = Content.player[0][0];
-		
-		/*sprite.addAnimation(PlayerAnimation.WALK_DOWN, 34);
-        sprite.addAnimation(PlayerAnimation.WALK_UP, 37);
-        sprite.addAnimation(PlayerAnimation.WALK_LEFT, 35);
-        sprite.addAnimation(PlayerAnimation.WALK_RIGHT, 36);
-        
-        sprite.playAnimation(PlayerAnimation.WALK_DOWN, false);*/
 	}
 
 	@Override
@@ -58,7 +51,6 @@ public class Player extends Mob{
 		rotatePlayer();
 		
 		if (Keys.anyDirectionKeyDown()) {
-			//setDirectionAnimation(currentDirection);
 			if(hasCollision(currentDirection)==null)
 				move(currentDirection);
 		}
@@ -73,7 +65,6 @@ public class Player extends Mob{
 			}else 
 				b.update();
 		}
-		//super.update();
 	}
 	
 	public boolean hasShield() {
@@ -123,23 +114,6 @@ public class Player extends Mob{
 	public Waffe getWaffe() {
 		return waffe;
 	}
-	
-	/*private void setDirectionAnimation(Direction d) {
-		switch (d) {
-        case LEFT:
-            sprite.playAnimation(PlayerAnimation.WALK_LEFT, true);
-            break;
-        case RIGHT:
-            sprite.playAnimation(PlayerAnimation.WALK_RIGHT, true);
-            break;
-        case UP:
-            sprite.playAnimation(PlayerAnimation.WALK_UP, true);
-            break;
-        case DOWN:
-            sprite.playAnimation(PlayerAnimation.WALK_DOWN, true);
-            break;
-		}
-	}*/
 	
 	@Override
 	protected void move(Direction d) {

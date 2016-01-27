@@ -86,7 +86,7 @@ public class MenuState extends GameState implements Runnable{
 			selected[2] = false;
 		}
 		
-		if(mx <= 660 && mx >= 500 && my >= 580 && my <= 620) {
+		if(mx <= 780 && mx >= 500 && my >= 580 && my <= 620) {
 			selected[3] = true;
 		}else {
 			selected[3] = false;

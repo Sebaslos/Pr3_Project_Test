@@ -14,6 +14,7 @@ import de.hsh.prog.gogodie.game.monster.MonsterFactory;
 import de.hsh.prog.gogodie.game.powerup.PowerUp;
 import de.hsh.prog.gogodie.game.powerup.PowerupFactory;
 import de.hsh.prog.gogodie.game.state.GameState;
+import de.hsh.prog.gogodie.game.utils.Content;
 import de.hsh.prog.gogodie.game.utils.Data;
 import de.hsh.prog.gogodie.game.utils.GameStateManager;
 import de.hsh.prog.gogodie.game.utils.Highscore;
@@ -38,6 +39,12 @@ public abstract class PlayState extends GameState implements Runnable{
 	
 	private int tick;
 	
+	private boolean blockInput;
+	private boolean eventClear;
+	private boolean eventDie;
+	private boolean eventFinish;
+	private int eventTick;
+	
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 	}
@@ -46,6 +53,12 @@ public abstract class PlayState extends GameState implements Runnable{
 	public void init() {
 		tick = 0;
 		finished = false;
+		
+		eventTick = 0;
+		blockInput = false;
+		eventClear = false;
+		eventDie = false;
+		eventFinish = false;
 		
 		player = new Player(640,320,16,15);
 		monsters = new ArrayList<Monster>();
@@ -69,35 +82,31 @@ public abstract class PlayState extends GameState implements Runnable{
 	@Override
 	public void update() {
 		
+		if(eventDie) event();
+		if(eventFinish) event();
+		if(eventClear) eventClear();
+		
 		if(player.getHP() <= 0) {
-			ActorList.removeAll();
-			Highscore.calculate();
-			JukeBox.stop(bgm);
-			JukeBox.loop("menubgm", 1000, 1000, JukeBox.getFrames("menubgm") - 1000);
-			gsm.setState(GameStateManager.HIGHSCORE);
-		}
+			blutflecken.add(new Blutfleck(player.getX(), player.getY(), 16, 16));
+			eventDie = true;
+			blockInput = true;
+		}else
+			player.update();
 		
 		if(finished) {
-			ActorList.removeAll();
 			if(this instanceof Level1) {
 				Data.setLevel1Time(Data.getTime());
-				JukeBox.stop(bgm);
-				gsm.setState(GameStateManager.PLAY_LEVEL2);
+				eventClear = true;
 			}
 			else if(this instanceof Level2) {
 				Data.setLevel2Time(Data.getTime());
-				Highscore.calculate();
-				JukeBox.stop(bgm);
-				JukeBox.loop("menubgm", 1000, 1000, JukeBox.getFrames("menubgm") - 1000);
-				gsm.setState(GameStateManager.HIGHSCORE);
+				eventFinish = true;
 			}
 		}
 		
 		Data.update();
 		
 		handleInput();
-		
-		player.update();
 		
 		if (tick % 2 == 0) {
 			MonsterFactory.setPlayerPosition(player.getX(), player.getY());
@@ -106,12 +115,12 @@ public abstract class PlayState extends GameState implements Runnable{
 				if (monster.getHP() <= 0) {
 					losch = monster;
 					Highscore.plusScore(losch.getPoint());
-					blutflecken.add(new Blutfleck(losch.getX(), losch.getY(), 16, 16));
 					
 					PowerUp powerup = PowerupFactory.createPowerup(losch.getX(), losch.getY());
-					if(powerup != null) {
+					if(powerup != null)
 						powerups.add(powerup);
-					}
+					else
+						blutflecken.add(new Blutfleck(losch.getX(), losch.getY(), 16, 16));
 				} else
 					monster.update();
 			}
@@ -144,14 +153,15 @@ public abstract class PlayState extends GameState implements Runnable{
 		g.drawImage(map.getMap(), 0, 0, null);
 		
 		for(Blutfleck bf : blutflecken) {
-			g.drawImage(bf.getFrame(), bf.getX(), bf.getY(), null);
+			g.drawImage(bf.getFrame(), bf.getX(), bf.getY(), (int)(bf.getWidth() * 1.3), (int)(bf.getHeight() * 1.3) ,null);
 		}
 		
 		for(PowerUp p : powerups) {
 			p.draw(g);
 		}
 		
-		g.drawImage(player.getStaticFrame(), player.getX() - 8, player.getY() - 8, null);
+		if(player.getHP() > 0)
+			g.drawImage(player.getStaticFrame(), player.getX() - 8, player.getY() - 8, null);
 		
 		for(Monster monster : monsters){
 			g.drawImage(monster.getFrame(), monster.getX(), monster.getY(), (int)(monster.getWidth() * 1.3), (int)(monster.getHeight() * 1.3) ,null);
@@ -163,11 +173,24 @@ public abstract class PlayState extends GameState implements Runnable{
 		}
 		
 		hud.draw(g);
+		
+		if(eventDie)
+			Content.drawString(g, "YOU DIE", 384, 328, 8, false);
+		if(eventClear)
+			Content.drawString(g, "LEVEL CLEAR", 288, 328, 8, false);
+		if(eventFinish)
+			Content.drawString(g, "YOU WIN", 384, 328, 8, false);
 	}
 
 	@Override
 	public void handleInput() {
-		//if(Keys.isDown(Keys.SPACE)) player.shoot();
+		if(Keys.isPressed(Keys.ESCAPE)) {
+			JukeBox.stop(bgm);
+			gsm.setPaused(true);
+		}
+		
+		if(blockInput) return;
+		
 		if(MouseHandler.pressed == true) player.shoot();
 		if(Keys.isDown(Keys.R) && !player.getWaffe().isInReload()) player.reloadWaffe();
 		
@@ -183,5 +206,37 @@ public abstract class PlayState extends GameState implements Runnable{
 	protected abstract int createMonster(String type);
 	
 	public abstract void execute();
-
+	
+	
+	/*----------------------------------------------------------*/
+	private void event() {
+		eventTick++;
+		if(eventTick == 180) {
+			eventTick = 0;
+			endOpreration();
+		}
+	}
+	
+	private void eventClear() {
+		eventTick++;
+		if(eventTick == 180) {
+			eventTick = 0;
+			clearOperation();
+		}
+	}
+	
+	private void endOpreration() {
+		ActorList.removeAll();
+		Highscore.calculate();
+		JukeBox.stop(bgm);
+		JukeBox.loop("menubgm", 1000, 1000, JukeBox.getFrames("menubgm") - 1000);
+		gsm.setState(GameStateManager.HIGHSCORE);
+	}
+	
+	private void clearOperation() {
+		ActorList.removeAll();
+		JukeBox.stop(bgm);
+		gsm.setState(GameStateManager.PLAY_LEVEL2);
+	}
+	
 }

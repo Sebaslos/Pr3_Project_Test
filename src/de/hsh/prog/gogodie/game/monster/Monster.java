@@ -26,10 +26,7 @@ public abstract class Monster extends Mob{
 	protected void attack(Player player){
 		if(!player.hasShield())
 			player.setHP(player.getHP() - this.getACT());
-		else 
-			System.out.println("fuck! player hasShield");
 		inCooldown = true;
-		System.out.println("Player HP: "+player.getHP());
 	}
 
 	private void cooldown() {

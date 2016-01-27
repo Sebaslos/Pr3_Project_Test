@@ -39,6 +39,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	// game state manager
 	private GameStateManager gsm;
 	
+	//Cursor
+	private String currentCursor;
+	
 	//mouse adapter
 	private MouseAdapter ma;
 	
@@ -48,7 +51,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		setFocusable(true);
 		requestFocus();
 		
-		setAimCursor();
+		//setAimCursor();
 		ma = new MouseAdapter() {
 
 			@Override
@@ -99,6 +102,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		g = (Graphics2D) image.getGraphics();
 		gsm = new GameStateManager();
+		currentCursor = "normal";
 	}
 	
 	@Override
@@ -135,6 +139,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	// updates game
 	private void update() {
 		gsm.update();
+		Keys.update();
+		
+		if(!gsm.getCursor().equals(currentCursor)) {
+			setAimCursor();
+		}
 	}
 		
 	// draws game
@@ -149,10 +158,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		g2.dispose();
 	}
 	
-	public void setAimCursor() {
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Cursor cursor = tk.createCustomCursor(Content.AIM[0][0], new Point(16, 16), "aim");
-		this.setCursor(cursor);
+	private void setAimCursor() {
+		if(currentCursor.equals("normal")) {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			Cursor cursor = tk.createCustomCursor(Content.AIM[0][0], new Point(16, 16), "aim");
+			this.setCursor(cursor);
+			currentCursor = "aim";
+		}else {
+			this.setCursor(Cursor.getDefaultCursor());
+			currentCursor = "normal";
+		}
+			
 	}
 	
 	// key event

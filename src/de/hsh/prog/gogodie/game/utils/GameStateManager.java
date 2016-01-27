@@ -19,6 +19,8 @@ public class GameStateManager {
 	private int currentState;
 	private int previousState;
 	
+	private String cursor;
+	
 	public static final int NUM_STATES = 7;
 	public static final int INTRO = 0;
 	public static final int MENU = 1;
@@ -43,6 +45,10 @@ public class GameStateManager {
 		setState(INTRO);
 		
 	}
+	
+	public String getCursor() {
+		return cursor;
+	}
 
 	public void setLoading(boolean b) {
 		loading = b;
@@ -59,6 +65,7 @@ public class GameStateManager {
 		if(i == INTRO) {
 			gameStates[i] = new IntroState(this);
 			gameStates[i].init();
+			cursor = "normal";
 		}
 		else if(i == MENU) {
 			MenuState menu = new MenuState(this);
@@ -67,6 +74,7 @@ public class GameStateManager {
 			
 			setLoading(true);
 			thread.start();
+			cursor = "normal";
 		}
 		else if(i == PLAY_LEVEL1) {
 			PlayState level1 = new Level1(this);
@@ -75,6 +83,7 @@ public class GameStateManager {
 			
 			setLoading(true);
 			thread.start();
+			cursor = "aim";
 		}
 		else if(i == PLAY_LEVEL2) {
 			PlayState level2 = new Level2(this);
@@ -83,16 +92,20 @@ public class GameStateManager {
 			
 			setLoading(true);
 			thread.start();
+			cursor = "aim";
 		}
 		else if(i == HELP) {
 			gameStates[i] = new HelpState(this);
 			gameStates[i].init();
+			cursor = "normal";
 		}else if(i == HIGHSCORE) {
 			gameStates[i] = new HighscoreState(this);
 			gameStates[i].init();
+			cursor = "normal";
 		}else if(i == CREDITS) {
 			gameStates[i] = new CreditsState(this);
 			gameStates[i].init();
+			cursor = "normal";
 		}
 		
 	}
