@@ -9,7 +9,7 @@ public class Boss1 extends Monster {
 		init();
 		setHP(100);
 		setACT(3);
-		setSpeed(2);
+		setSpeed(3);
 		
 		type = 4;
 		point = 5000;

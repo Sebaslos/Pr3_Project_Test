@@ -9,7 +9,7 @@ public class NormalMonster extends Monster {
 		init();
 		setHP(10);
 		setACT(3);
-		setSpeed(2);
+		setSpeed(3);
 		
 		type = 1;
 		point = 200;

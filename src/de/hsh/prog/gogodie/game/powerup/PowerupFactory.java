@@ -6,7 +6,7 @@ import de.hsh.prog.gogodie.game.waffe.Shotgun;
 
 public class PowerupFactory {
 	
-	private static double probability = 0.5;
+	private static double probability = 0.25;
 	
 	public static PowerUp createPowerup(int x, int y) {
 		
@@ -14,20 +14,22 @@ public class PowerupFactory {
 		if(n < probability) {
 			PowerUp p = null;
 			n = Math.random();
-			if(n < 0.1) {
+			if(n < 0.075) {
 				p = new Pistol(x, y, 16, 16);
-			}else if(n >= 0.1 && n < 0.2) {
+			}else if(n >= 0.075 && n < 0.175) {
 				p = new Shotgun(x, y, 16, 16);
-			}else if(n >= 0.2 && n < 0.3) {
+			}else if(n >= 0.175 && n < 0.3) {
 				p = new Machinegun(x, y, 16, 16);
-			}else if(n >= 0.3 && n < 0.45) {
+			}else if(n >= 0.3 && n < 0.395) {
 				p = new Shield(x, y, 16, 16);
-			}else if(n >= 0.45 && n < 0.6) {
+			}else if(n >= 0.395 && n < 0.5) {
 				p = new EndlessBullet(x, y, 16, 16);
-			}else if(n >= 0.6 && n < 0.8) {
+			}else if(n >= 0.5 && n < 0.775) {
 				p = new HpRecovery(x, y, 16, 16);
-			}else {
+			}else if(n >= 0.775 && n < 0.875){
 				p = new SpeedUp(x, y, 16, 16);
+			}else {
+				p = new ExtraDamage(x, y, 16, 16);
 			}
 			
 			return p;

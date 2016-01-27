@@ -17,46 +17,53 @@ import org.dom4j.io.XMLWriter;
 public class XmlUtils {
 	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<String> getScoreList() {
+	public static ArrayList<PlayerInfo> getScoreList() {
 		Document document = read();
 		Element root = document.getRootElement();
 		
-		ArrayList<String> scoreList = new ArrayList<String>();
+		ArrayList<PlayerInfo> scoreList = new ArrayList<PlayerInfo>();
 		
 		List<Element> list = root.elements();
 		for(Element e : list) {
 			List<Attribute> l = e.attributes();
+			PlayerInfo pi = new PlayerInfo();
+			
 			for(Attribute att : l) {
 				String name = att.getName();
 				String value = att.getValue();
-				if(name.equals("score"))
-					scoreList.add(value);
+				if(name.equals("name"))
+					pi.setName(value);
+				else if(name.equals("score"))
+					pi.setScore(Long.parseLong(value));
 			}
+			scoreList.add(pi);
 		}
 		
 		return scoreList;
 	}
 	
-	public static void updateScore(long score) {
-		ArrayList<String> scoreList = getScoreList();
-		ArrayList<String> newList = new ArrayList<String>();
+	public static void updateScore(PlayerInfo pi) {
+		ArrayList<PlayerInfo> scoreList = getScoreList();
+		ArrayList<PlayerInfo> newList = new ArrayList<PlayerInfo>();
+		
 		int index = -1;
 		for(int i=0;i < scoreList.size();i++) {
-			if(score >= Long.parseLong(scoreList.get(i))) {
+			if(pi.getScore() >= scoreList.get(i).getScore()) {
 				index = i;
 				break;
 			}
 		}
+		
 		if(index > -1) {
 			if(index == 0) {
-				newList.add(score + "");
+				newList.add(pi);
 				newList.addAll(scoreList.subList(0, scoreList.size() - 1));
 			}else if(index == scoreList.size() - 1) {
 				newList.addAll(scoreList.subList(0, scoreList.size() - 1));
-				newList.add(score + "");
+				newList.add(pi);
 			}else {
 				newList.addAll(scoreList.subList(0, index));
-				newList.add(score + "");
+				newList.add(pi);
 				newList.addAll(scoreList.subList(index, scoreList.size() - 1));
 			}
 			
@@ -65,7 +72,7 @@ public class XmlUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static void updateList(ArrayList<String> newList) {
+	private static void updateList(ArrayList<PlayerInfo> newList) {
 		Document document = read();
 		Element root = document.getRootElement();
 		
@@ -75,8 +82,10 @@ public class XmlUtils {
 			List<Attribute> l = e.attributes();
 			for(Attribute att : l) {
 				String name = att.getName();
-				if(name.equals("score"))
-					att.setValue(newList.get(i));
+				if(name.equals("name"))
+					att.setValue(newList.get(i).getName());
+				else if(name.equals("score"))
+					att.setValue(newList.get(i).getScore()+"");
 			}
 		}
 		
@@ -86,8 +95,7 @@ public class XmlUtils {
 	public static Document read() {
 		SAXReader sax = new SAXReader();
 		String path = System.getProperty("user.dir");
-		System.out.println(path);
-		File file = new File(path + "\\highscore.xml");
+		File file = new File(path + "/highscore.xml");
 		
 		Document document = null;
 		
@@ -107,7 +115,7 @@ public class XmlUtils {
 	
 	public static void write(Document document) {
 		String path = System.getProperty("user.dir");
-		File file = new File(path + "\\highscore.xml");
+		File file = new File(path + "/highscore.xml");
 		
 		Writer w;
 		try {

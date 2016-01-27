@@ -21,7 +21,7 @@ public class Level2 extends PlayState {
 	@Override
 	public void init() {
 		super.init();
-		monster_num = 20;
+		monster_num = 80;
 		map = new Map("/res/map_level2.jpg");
 		
 		bgm = "level2bgm";
@@ -69,7 +69,7 @@ public class Level2 extends PlayState {
 		}
 		
 		if(comeBoss) {
-			if(createMonster("Boss1") != -1) {
+			if(createMonster("Boss2") != -1) {
 				i++;
 				comeBoss = false;
 			}

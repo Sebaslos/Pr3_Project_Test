@@ -28,12 +28,22 @@ public abstract class Waffe extends PowerUp{
 	protected int reloadTime = 60;
 	private boolean inReload = false;
 	
+	private int atk;
+	
 	protected String sfx_shoot;
 	protected String sfx_reload;
 	 
 	public Waffe(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		munitions = new ArrayList<Munition>();
+	}
+	
+	public void setATK(int atk) {
+		this.atk = atk;
+	}
+	
+	public int getATK() {
+		return atk;
 	}
 
 	public int getRestMunition() {
@@ -113,7 +123,7 @@ public abstract class Waffe extends PowerUp{
 	public void shoot(double radio) {
 		if(!inCooldown && !inReload) {
 			JukeBox.play(sfx_shoot);
-			Munition m = new Munition(muzzle_x, muzzle_y, munition_type, radio);
+			Munition m = new Munition(muzzle_x, muzzle_y, munition_type, radio, atk);
 			munitions.add(m);
 			ActorList.add(m);
 			

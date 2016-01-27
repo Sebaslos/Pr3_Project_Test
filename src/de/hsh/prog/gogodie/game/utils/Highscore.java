@@ -2,23 +2,31 @@ package de.hsh.prog.gogodie.game.utils;
 
 public class Highscore {
 	
-	private static long score = 0;
+	private static PlayerInfo playinfo = new PlayerInfo();
 	
 	public static boolean level1_clear = false;
 	public static boolean level2_clear = false;
 	
 	public static boolean show_current_score = false;
 	
+	public static void setName(String n) {
+		playinfo.setName(n);
+	}
+	
+	public static String getName() {
+		return playinfo.getName();
+	}
+	
 	public static void plusScore(long ds) {
-		score += ds;
+		playinfo.setScore(playinfo.getScore() + ds);
 	}
 	
 	public static void setScore(long l) {
-		score = l;
+		playinfo.setScore(l);
 	}
 	
 	public static long getScore() {
-		return score;
+		return playinfo.getScore();
 	}
 	
 	public static void calculate() {
@@ -26,24 +34,25 @@ public class Highscore {
 		if(level1_clear && level2_clear) {
 			time = Data.getTotalTime();
 			if(time > 0 && time <= 3600 * 2) {
-				score += 10000;
+				plusScore(10000);
 			}else if(time > 3600 * 2 && time <=  3600 * 3) {
-				score += 7500;
+				plusScore(7500);
 			}else if(time > 3600 * 3 && time <=  3600 * 5) {
-				score += 5000;
+				plusScore(5000);
 			}else {
-				score += 3000;
+				plusScore(3000);
 			}
 		}else if(level1_clear) {
-			score += 2000;
+			plusScore(2000);
 		}
 		
 		show_current_score = true;
-		XmlUtils.updateScore(score);
+		XmlUtils.updateScore(playinfo);
 	}
 	
 	public static void clear() {
-		score = 0;
+		setScore(0);
+		setName(null);
 		level1_clear = false;
 		level2_clear = false;
 	}

@@ -2,14 +2,14 @@
 
 <highscore>
 
-	<record rank = "1" score = "000" ></record>
+	<record rank = "1" name = "null" score = "0" ></record>
 	
-	<record rank = "2" score = "000" ></record>
+	<record rank = "2" name = "null" score = "0" ></record>
 	
-	<record rank = "3" score = "000" ></record>
+	<record rank = "3" name = "null" score = "0" ></record>
 	
-	<record rank = "4" score = "000" ></record>
+	<record rank = "4" name = "null" score = "0" ></record>
 	
-	<record rank = "5" score = "000" ></record>
+	<record rank = "5" name = "null" score = "0" ></record>
 
 </highscore>

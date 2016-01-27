@@ -14,6 +14,8 @@ public class Content {
 	
 	public static BufferedImage[][] MENUBG = load("/res/testbild1.jpg", 1280, 720);
 	
+	public static BufferedImage[][] HELPBG = load("/res/Anleitung.gif", 1280, 720);
+	
 	public static BufferedImage[][] font = load("/res/font.gif", 8, 8);
 
 	public static BufferedImage[][] load(String path, int w, int h) {

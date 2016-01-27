@@ -21,7 +21,7 @@ public class Level1 extends PlayState {
 	@Override
 	public void init() {
 		super.init();
-		monster_num = 20;
+		monster_num = 40;
 		map = new Map("/res/map_level1.jpg");
 		
 		bgm = "level1bgm";

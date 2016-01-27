@@ -9,6 +9,7 @@ public class Shotgun extends Waffe {
 		this.cooldownTime = 60;
 		this.reloadTime = 120;
 		
+		this.setATK(10);
 		this.munition_type = Munition.ACT;
 		
 		this.sfx_shoot = "shotgun";

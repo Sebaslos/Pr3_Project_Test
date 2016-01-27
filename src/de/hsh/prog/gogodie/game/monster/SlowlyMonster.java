@@ -9,7 +9,7 @@ public class SlowlyMonster extends Monster {
 		init();
 		setHP(15);
 		setACT(5);
-		setSpeed(1);
+		setSpeed(2);
 		
 		type = 3;
 		point = 300;

@@ -19,13 +19,14 @@ public class GameStateManager {
 	private int currentState;
 	private int previousState;
 	
-	public static final int NUM_STATES = 6;
+	public static final int NUM_STATES = 7;
 	public static final int INTRO = 0;
 	public static final int MENU = 1;
 	public static final int PLAY_LEVEL1 = 2;
 	public static final int PLAY_LEVEL2 = 3;
 	public static final int HELP = 4;
 	public static final int HIGHSCORE = 5;
+	public static final int CREDITS = 6;
 	
 	private Thread thread;
 	
@@ -42,7 +43,7 @@ public class GameStateManager {
 		setState(INTRO);
 		
 	}
-	
+
 	public void setLoading(boolean b) {
 		loading = b;
 	}
@@ -88,6 +89,9 @@ public class GameStateManager {
 			gameStates[i].init();
 		}else if(i == HIGHSCORE) {
 			gameStates[i] = new HighscoreState(this);
+			gameStates[i].init();
+		}else if(i == CREDITS) {
+			gameStates[i] = new CreditsState(this);
 			gameStates[i].init();
 		}
 		

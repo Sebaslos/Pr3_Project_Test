@@ -9,7 +9,7 @@ public class SpeedMonster extends Monster {
 		init();
 		setHP(5);
 		setACT(1);
-		setSpeed(3);
+		setSpeed(4);
 		
 		type = 2;
 		point = 100;

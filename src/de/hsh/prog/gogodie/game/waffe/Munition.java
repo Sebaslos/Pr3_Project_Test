@@ -35,7 +35,7 @@ public class Munition extends Mob {
 		this.setSpeed(10);
 	}
 	
-	public Munition(int x, int y, int type, double radio) {
+	public Munition(int x, int y, int type, double radio, int atk) {
 		this.radio = radio;
 		setPosition(x, y);
 		
@@ -47,13 +47,13 @@ public class Munition extends Mob {
 		this.setImage(33);
 		
 		if(this.type == NORMAL) {
-			this.setACT(5);
+			this.setACT(atk);  //5
 			this.setSpeed(10);
 		}else if(this.type == SPEED) {
-			this.setACT(2);
+			this.setACT(atk);   //3
 			this.setSpeed(15);
 		}else if(this.type == ACT) {
-			this.setACT(10);
+			this.setACT(atk);   //10
 			this.setSpeed(10);
 		}
 		

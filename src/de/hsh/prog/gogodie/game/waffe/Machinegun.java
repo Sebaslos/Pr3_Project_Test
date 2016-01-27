@@ -9,6 +9,7 @@ public class Machinegun extends Waffe {
 		this.cooldownTime = 15;
 		this.reloadTime = 90;
 		
+		this.setATK(3);
 		this.munition_type = Munition.SPEED;
 		
 		this.sfx_shoot = "machinegun";

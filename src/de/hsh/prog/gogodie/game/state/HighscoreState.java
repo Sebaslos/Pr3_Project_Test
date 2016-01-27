@@ -9,13 +9,14 @@ import de.hsh.prog.gogodie.game.utils.Content;
 import de.hsh.prog.gogodie.game.utils.GameStateManager;
 import de.hsh.prog.gogodie.game.utils.Highscore;
 import de.hsh.prog.gogodie.game.utils.MouseHandler;
+import de.hsh.prog.gogodie.game.utils.PlayerInfo;
 import de.hsh.prog.gogodie.game.utils.XmlUtils;
 
 public class HighscoreState extends GameState {
 
 	private String option = "BACK";
 	private boolean selected = false;
-	private ArrayList<String> scoreList;
+	private ArrayList<PlayerInfo> scoreList;
 	
 	public HighscoreState(GameStateManager gsm) {
 		super(gsm);
@@ -40,7 +41,7 @@ public class HighscoreState extends GameState {
 		
 		drawHighscoreList(g);
 		if(Highscore.show_current_score == true) {
-			Content.drawString(g, "current: "+Highscore.getScore(), 260, 500, 5, false);
+			Content.drawString(g, "current: "+Highscore.getScore(), 300, 500, 5, false);
 		}
 		
 		
@@ -49,10 +50,11 @@ public class HighscoreState extends GameState {
 	
 	private void drawHighscoreList(Graphics2D g) {
 		for(int i=0;i < scoreList.size();i++) {
-			Content.drawString(g, i+1 + ": "+scoreList.get(i), 500, 150 + i * 50, 5, false);
+			Content.drawString(g, i+1 + ": "+scoreList.get(i).getScore(), 300, 150 + i * 50, 5, false);
+			Content.drawString(g, scoreList.get(i).getName(), 780, 150 + i * 50, 5, false);
 		}
 	}
-
+	
 	@Override
 	public void handleInput() {
 		int mx = MouseHandler.getMouse_X();

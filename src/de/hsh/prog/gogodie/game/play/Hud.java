@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import de.hsh.prog.gogodie.game.actor.Player;
 import de.hsh.prog.gogodie.game.utils.Content;
+import de.hsh.prog.gogodie.game.utils.Data;
 
 public class Hud {
 
@@ -39,6 +40,17 @@ public class Hud {
 		s = player.getWaffe().getRestMunition() + "/" + munition;
 		Content.drawString(g, s, 80, 668, 3, false);
 		
+		//draw time
+		int minutes = (int) (Data.getTime() / 3600);
+		int seconds = (int) ((Data.getTime() / 60) % 60);
+		if(minutes < 10) {
+			if(seconds < 10) Content.drawString(g, "0" + minutes + ":0" + seconds, 1120, 16, 3, false);
+			else Content.drawString(g, "0" + minutes + ":" + seconds, 1120, 16, 3, false);
+		}
+		else {
+			if(seconds < 10) Content.drawString(g, minutes + ":0" + seconds, 1120, 16, 3, false);
+			else Content.drawString(g, minutes + ":" + seconds, 1120, 16, 3, false);
+		}
 		
 	}
 	

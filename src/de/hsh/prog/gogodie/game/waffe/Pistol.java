@@ -7,6 +7,7 @@ public class Pistol extends Waffe {
 		this.munitionNum = 12;
 		this.restMunition = munitionNum;
 		
+		this.setATK(5);
 		this.munition_type = Munition.NORMAL;
 		
 		this.sfx_shoot = "pistol";
