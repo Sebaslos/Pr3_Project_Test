@@ -10,6 +10,7 @@ public class GameLauncher {
 		EventQueue.invokeLater(new Runnable() {
             @Override public void run() {
             	new Game();
+                System.out.println("start");
             }
         });
 	}
